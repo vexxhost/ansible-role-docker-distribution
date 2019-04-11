@@ -9,7 +9,7 @@ storage:
   filesystem:
     rootdirectory: /var/lib/registry
 {% if docker_distribution_proxy %}
-proxy: {{ docker_distribution_proxy | to_nice_yaml }}
+proxy: {{ docker_distribution_proxy | to_yaml }}
 {% endif %}
 http:
   addr: {{ docker_distribution_http_addr }}
