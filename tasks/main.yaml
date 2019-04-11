@@ -1,0 +1,20 @@
+---
+- name: Gather variables for each operating system
+  include_vars: "{{ item }}.yaml"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}"
+    - "{{ ansible_distribution | lower }}"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}"
+    - "{{ ansible_os_family | lower }}"
+
+- name: Install packages
+  import_tasks: "install/{{ item }}.yaml"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}"
+    - "{{ ansible_distribution | lower }}"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}"
+    - "{{ ansible_os_family | lower }}"

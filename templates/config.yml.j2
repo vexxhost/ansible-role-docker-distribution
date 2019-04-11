@@ -1,0 +1,15 @@
+---
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  cache:
+    layerinfo: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+{% if docker_distribution_proxy %}
+proxy: {{ docker_distribution_proxy | to_nice_yaml }}
+{% endif %}
+http:
+  addr: :5000

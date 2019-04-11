@@ -1,0 +1,7 @@
+---
+- name: Install packages (RedHat)
+  yum:
+    name: "{{ docker_distribution_packages }}"
+    enablerepo: extras
+    state: present
+  when: ansible_os_family == 'RedHat'
