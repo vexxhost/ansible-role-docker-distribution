@@ -12,4 +12,4 @@ storage:
 proxy: {{ docker_distribution_proxy | to_nice_yaml }}
 {% endif %}
 http:
-  addr: :5000
+  addr: {{ docker_distribution_http_addr }}
