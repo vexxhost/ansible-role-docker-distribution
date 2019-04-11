@@ -1,5 +1,6 @@
 ---
 - name: Install packages (RedHat)
+  become: true
   yum:
     name: "{{ docker_distribution_packages }}"
     enablerepo: extras

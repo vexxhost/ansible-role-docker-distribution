@@ -1,0 +1,6 @@
+---
+- name: Reload Docker Distribution
+  become: true
+  service:
+    name: docker-distribution
+    state: reloaded

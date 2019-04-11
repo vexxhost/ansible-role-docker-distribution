@@ -1,20 +1,37 @@
 ---
 - name: Gather variables for each operating system
-  include_vars: "{{ item }}.yaml"
+  include_vars: "{{ item }}"
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}"
-    - "{{ ansible_distribution | lower }}"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}"
-    - "{{ ansible_os_family | lower }}"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+    - "{{ ansible_distribution | lower }}.yaml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yaml"
+    - "{{ ansible_os_family | lower }}.yaml"
 
 - name: Install packages
-  include_tasks: "install/{{ item }}.yaml"
+  include_tasks: "{{ item }}"
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}"
-    - "{{ ansible_distribution | lower }}"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}"
-    - "{{ ansible_os_family | lower }}"
+    - "install/{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+    - "install/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+    - "install/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+    - "install/{{ ansible_distribution | lower }}.yaml"
+    - "install/{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yaml"
+    - "install/{{ ansible_os_family | lower }}.yaml"
+
+- name: Drop configuration file
+  become: true
+  template:
+    src: config.yml.j2
+    dest: /etc/docker-distribution/registry/config.yml
+  notify:
+    - Reload Docker Distribution
+
+- meta: flush_handlers
+
+- name: Start & enable service
+  become: true
+  service:
+    name: docker-distribution
+    state: started
+    enabled: true
